@@ -54,7 +54,9 @@ npm run build
 php artisan serve
 ```
 
-Open http://127.0.0.1:8000
+Then open (`http://127.0.0.1:8000`) in your browser.
+
+> Note: this is a local address. It works only on the computer where `php artisan serve` is running, so the app is not hosted online.
 
 ## Documentation
 
