@@ -5,21 +5,22 @@ A simple website where anyone can read quotes, and registered users can share, e
 Built with Laravel, MySQL, Laravel Breeze, Blade, Tailwind CSS, and Alpine.js.
 
 ## Features
-## Project Structure
-
-**Frontend:** `resources/views/`, `resources/css/`, `resources/js/`
-**Backend:** `app/Http/Controllers/`, `app/Models/`, `app/Policies/`, `routes/web.php`
-**Database:** `database/migrations/`
-
-## Added Feature (Likes)
-
-Logged-in users can like and unlike any quote, and everyone, including guests, can see the like count. A user can like a quote only once, which is enforced by a unique constraint in the database (`quote_likes` table).
 
 - View all quotes without logging in
 - Sign up, log in, log out
 - Share a quote (3 to 155 characters)
 - Edit and delete your own quotes only
 - Like and unlike quotes, with a like counter (added feature)
+
+## Project Structure
+
+- **Frontend:** `resources/views/`, `resources/css/`, `resources/js/`
+- **Backend:** `app/Http/Controllers/`, `app/Models/`, `app/Policies/`, `routes/web.php`
+- **Database:** `database/migrations/`
+
+## Added Feature (Likes)
+
+Logged-in users can like and unlike any quote, and everyone, including guests, can see the like count. A user can like a quote only once, which is enforced by a unique constraint in the database (`quote_likes` table).
 
 ## How to run
 
