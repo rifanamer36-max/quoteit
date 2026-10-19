@@ -1,47 +1,43 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@extends('layouts.tuwaiq')
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+@section('title', 'Log In')
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+@section('content')
+<div class="grid grid-cols-1 md:grid-cols-2">
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+    <div class="flex items-center justify-center p-8">
+        <form method="POST" action="{{ route('login') }}" class="mx-auto mt-5 w-full max-w-xl p-9">
+            @csrf
+            <h2 class="mb-4 text-center text-2xl font-bold text-white">Log In</h2>
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+            <div class="mb-4">
+                <label for="email" class="label">Email</label>
+                <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus class="input">
+                <p class="mt-1 text-xs text-white">A valid email, e.g. name@example.com</p>
+                @error('email')
+                    <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                @enderror
+            </div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+            <div class="mb-4">
+                <label for="password" class="label">Password</label>
+                <input id="password" name="password" type="password" required minlength="8" class="input">
+                <p class="mt-1 text-xs text-white">At least 8 characters.</p>
+                @error('password')
+                    <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                @enderror
+            </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
+            <p class="mb-4 text-sm text-white">
+                Don't have an account? <a href="{{ route('register') }}" class="text-blue-400 hover:underline">Sign Up</a>
+            </p>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
+            <button class="btn-primary w-full">Log In</button>
+        </form>
+    </div>
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+    <div class="hidden items-center justify-center md:flex">
+        <img src="{{ asset('images/signup.jpeg') }}" alt="QuoteIt" class="w-full max-w-sm rounded-2xl object-contain">
+    </div>
+</div>
+@endsection
