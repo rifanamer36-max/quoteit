@@ -9,13 +9,18 @@ export default {
         './resources/views/**/*.blade.php',
     ],
 
-    theme: {
-        extend: {
-            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-            },
+   theme: {
+    extend: {
+        colors: {
+            'tuwaiq-purple': '#432a80',
+            'tuwaiq-purple-light': '#53398f',
+            'tuwaiq-orange': '#f2a54a',
+            'tuwaiq-teal': '#4fc9b0',
+            'tuwaiq-text': '#ece8f6',
         },
+        // ... اتركي fontFamily وغيره كما هو
     },
+},
 
     plugins: [forms],
 };

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -7,137 +7,134 @@
     <style>[x-cloak]{display:none !important}</style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="min-h-screen bg-center bg-fixed bg-no-repeat"
+      style="background-image: url('{{ asset('images/background.png') }}'); background-size: cover;">
 
-    <nav class="bg-white shadow">
-        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="{{ route('quotes.index') }}" class="text-xl font-bold">QuoteIt</a>
-
-            <div class="flex items-center gap-4">
-                @auth
-                    <span class="text-gray-700">{{ auth()->user()->name }}</span>
+    <nav class="relative sticky top-0 z-50 border-b border-white/30 bg-[#10081F] shadow-sm">
+        <p class="site-name">QuoteIt</p>
+        <ul class="mx-auto flex max-w-7xl items-center gap-6 px-4 py-1">
+            @auth
+                <li>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button class="text-red-600 hover:underline">Log Out</button>
+                        <button class="btn-primary">Log Out</button>
                     </form>
-                @else
-                    <a href="{{ route('login') }}" class="hover:underline">Log in</a>
-                    <a href="{{ route('register') }}" class="hover:underline">Register</a>
-                @endauth
-            </div>
-        </div>
+                </li>
+                <li>
+                    <img src="{{ asset('images/profile.jpeg') }}" alt="Profile"
+                         class="h-10 w-10 rounded-full object-cover ring-2 ring-tuwaiq-purple">
+                </li>
+                <li><p class="text-white">{{ auth()->user()->name }}</p></li>
+            @else
+                <li><a href="{{ route('login') }}" class="btn-primary">Log In</a></li>
+                <li><a href="{{ route('register') }}" class="btn-primary">Sign Up</a></li>
+            @endauth
+            <li class="ml-auto"><img src="{{ asset('images/logo.png') }}" class="h-16 w-auto" alt="Logo"></li>
+        </ul>
     </nav>
 
-   <main class="max-w-4xl mx-auto px-4 py-8" x-data="{ open: {{ $errors->any() ? 'true' : 'false' }} }">
+    <main class="mx-auto max-w-3xl p-8" x-data="{ open: {{ $errors->any() ? 'true' : 'false' }} }">
 
-    @guest
-        <a href="{{ route('login') }}"
-           class="inline-block mb-6 bg-gray-800 text-white px-4 py-2 rounded">
-            Log in to share a quote
-        </a>
-    @endguest
+        <h2 class="mb-4 text-2xl font-bold text-white">Quotes</h2>
 
-    <div class="space-y-4">
-        @forelse ($quotes as $quote)
-           <div class="bg-white rounded-lg shadow p-5"
-     x-data="{ editing: {{ $errors->update->has('text') && old('quote_id') == $quote->id ? 'true' : 'false' }} }">
+        @guest
+            <a href="{{ route('login') }}" class="btn-primary mb-6">Log in to share a quote</a>
+        @endguest
 
-    {{-- عرض الاقتباس --}}
-    <div x-show="!editing">
-        <p class="text-lg">“{{ $quote->text }}”</p>
-        <p class="text-sm text-gray-500 mt-3">
-            {{ $quote->user->name }} · {{ $quote->created_at->format('d M Y') }}
-        </p>
-        @php $liked = auth()->check() && $quote->likedBy->contains(auth()->id()); @endphp
+        <div class="space-y-4">
+            @forelse ($quotes as $quote)
+                @php
+                    $mine = auth()->id() === $quote->user_id;
+                    $liked = auth()->check() && $quote->likedBy->contains(auth()->id());
+                @endphp
 
-<div class="mt-3 text-sm">
-    @auth
-        <form method="POST" action="{{ route('quotes.like', $quote) }}">
-            @csrf
-            <button class="{{ $liked ? 'text-red-600' : 'text-gray-500' }}">
-                {{ $liked ? '❤️' : '🤍' }} {{ $quote->likedBy->count() }}
-            </button>
-        </form>
-    @else
-        <span class="text-gray-500">🤍 {{ $quote->likedBy->count() }}</span>
-    @endauth
-</div>
+                <div class="rounded-2xl p-5 shadow {{ $mine ? 'bg-tuwaiq-purple text-white' : 'bg-white text-tuwaiq-purple' }}"
+                     x-data="{ editing: {{ $errors->update->has('text') && old('quote_id') == $quote->id ? 'true' : 'false' }} }">
 
-        @can('update', $quote)
-            <div class="flex gap-4 mt-3 text-sm">
-                <button @click="editing = true" class="text-blue-600 hover:underline">Edit</button>
+                    <div x-show="!editing">
+                        <p class="text-lg">“{{ $quote->text }}”</p>
+                        <p class="mt-2 text-sm">
+                            <span class="font-semibold">— {{ $mine ? 'You' : $quote->user->name }}</span>
+                            <span class="text-xs opacity-70">· {{ $quote->created_at->format('d M Y') }}</span>
+                        </p>
 
-                <form method="POST" action="{{ route('quotes.destroy', $quote) }}">
-                    @csrf
-                    @method('DELETE')
-                    <button class="text-red-600 hover:underline">Delete</button>
-                </form>
-            </div>
-        @endcan
-    </div>
+                        <div class="mt-3 flex items-center gap-4 text-sm">
+                            @auth
+                                <form method="POST" action="{{ route('quotes.like', $quote) }}">
+                                    @csrf
+                                    <button>{{ $liked ? '❤️' : '🤍' }} {{ $quote->likedBy->count() }}</button>
+                                </form>
+                            @else
+                                <span>🤍 {{ $quote->likedBy->count() }}</span>
+                            @endauth
 
-    {{-- نموذج التعديل --}}
-    @can('update', $quote)
-        <form x-show="editing" x-cloak method="POST"
-              action="{{ route('quotes.update', $quote) }}">
-            @csrf
-            @method('PATCH')
-            <input type="hidden" name="quote_id" value="{{ $quote->id }}">
+                            @can('update', $quote)
+                                <button @click="editing = true" class="hover:text-tuwaiq-orange">✎ Edit</button>
+                                <form method="POST" action="{{ route('quotes.destroy', $quote) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="hover:text-tuwaiq-orange">⌫ Delete</button>
+                                </form>
+                            @endcan
+                        </div>
+                    </div>
 
-            <textarea name="text" rows="3" maxlength="155"
-                      class="w-full border rounded p-2">{{ old('quote_id') == $quote->id ? old('text') : $quote->text }}</textarea>
+                    @can('update', $quote)
+                        <form x-show="editing" x-cloak method="POST" action="{{ route('quotes.update', $quote) }}">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="quote_id" value="{{ $quote->id }}">
 
-            @if (old('quote_id') == $quote->id)
-                @error('text', 'update')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            @endif
+                            <textarea name="text" rows="3" minlength="3" maxlength="155" required
+                                      class="input">{{ old('quote_id') == $quote->id ? old('text') : $quote->text }}</textarea>
 
-            <div class="flex gap-3 mt-3">
-                <button class="bg-gray-800 text-white px-4 py-1 rounded">Save</button>
-                <button type="button" @click="editing = false"
-                        class="text-gray-600 hover:underline">Cancel</button>
-            </div>
-        </form>
-    @endcan
-</div>
-        @empty
-            <p class="text-gray-500">No quotes yet.</p>
-        @endforelse
-    </div>
+                            @if (old('quote_id') == $quote->id)
+                                @error('text', 'update')
+                                    <p class="mt-1 text-sm text-red-300">{{ $message }}</p>
+                                @enderror
+                            @endif
 
-    @auth
-        {{-- زر + --}}
-        <button @click="open = true"
-                class="fixed bottom-6 right-6 bg-gray-800 text-white w-14 h-14 rounded-full text-3xl shadow-lg">
-            +
-        </button>
-
-        {{-- نافذة Share a quote --}}
-        <div x-show="open" x-cloak
-             class="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-bold">Share a quote</h2>
-                    <button @click="open = false" class="text-gray-500 text-xl">✕</button>
+                            <div class="mt-3 flex gap-3">
+                                <button class="btn-secondary">Save</button>
+                                <button type="button" @click="editing = false" class="hover:underline">Cancel</button>
+                            </div>
+                        </form>
+                    @endcan
                 </div>
-
-                <form method="POST" action="{{ route('quotes.store') }}">
-                    @csrf
-                    <textarea name="text" rows="4" maxlength="155"
-                              placeholder="3 to 155 characters"
-                              class="w-full border rounded p-2">{{ old('text') }}</textarea>
-
-                    @error('text')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-
-                    <button class="mt-4 bg-gray-800 text-white px-4 py-2 rounded">Send</button>
-                </form>
-            </div>
+            @empty
+                <p class="text-gray-300">No quotes yet. Be the first to share one!</p>
+            @endforelse
         </div>
-    @endauth
 
-</main>
+        @auth
+            <button @click="open = true" aria-label="Share a quote"
+                    class="fixed bottom-8 right-8 z-40 flex h-16 w-16 items-center justify-center rounded-full bg-tuwaiq-purple text-4xl text-white shadow-xl transition hover:scale-110 hover:bg-tuwaiq-purple-light">
+                +
+            </button>
+
+            <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                <div class="w-full max-w-lg rounded-3xl bg-white p-6 shadow-2xl">
+                    <div class="mb-4 flex items-center justify-between">
+                        <h2 class="text-2xl font-bold text-tuwaiq-purple">Share a quote</h2>
+                        <button @click="open = false" class="text-xl text-gray-400 hover:text-gray-700">✕</button>
+                    </div>
+
+                    <form method="POST" action="{{ route('quotes.store') }}" class="space-y-3">
+                        @csrf
+                        <textarea name="text" rows="5" minlength="3" maxlength="155" required
+                                  placeholder="Write your quote…" class="input resize-none">{{ old('text') }}</textarea>
+                        <p class="text-xs text-gray-500">3–155 characters.</p>
+
+                        @error('text')
+                            <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+
+                        <button class="btn-primary w-full">Send</button>
+                    </form>
+                </div>
+            </div>
+        @endauth
+
+    </main>
 </body>
 </html>
