@@ -60,4 +60,4 @@ Then open (`http://127.0.0.1:8000`) in your browser.
 
 ## Documentation
 
-The full requirements are in [docs/QuoteIt_SRS.docx] (docs/QuoteIt_SRS.docx).
+The full requirements are in [docs/QuoteIt_SRS.docx](docs/QuoteIt_SRS.docx).
