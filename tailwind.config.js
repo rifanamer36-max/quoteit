@@ -14,8 +14,8 @@ export default {
         colors: {
             'tuwaiq-purple': '#432a80',
             'tuwaiq-purple-light': '#53398f',
-            'tuwaiq-orange': '#f2a54a',
-            'tuwaiq-teal': '#4fc9b0',
+            'tuwaiq-orange': '#f5c9a8',
+            'tuwaiq-teal': '#a9dccf',
             'tuwaiq-text': '#ece8f6',
         },
         // ... اتركي fontFamily وغيره كما هو

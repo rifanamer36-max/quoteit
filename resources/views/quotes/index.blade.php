@@ -36,7 +36,7 @@
         </ul>
     </nav>
 
-    <main class="mx-auto max-w-3xl p-8" x-data="{ open: {{ $errors->any() ? 'true' : 'false' }}, mood: '' }">
+    <main class="mx-auto max-w-3xl p-8" x-data="quotesPage({{ $errors->any() ? 'true' : 'false' }})">
 @if ($daily)
     <div class="mb-8 rounded-3xl border border-tuwaiq-orange/40 bg-gradient-to-br from-tuwaiq-purple to-[#1a0b3b] p-6 text-white shadow-xl"
          x-data="{ copied: false }">
@@ -102,7 +102,8 @@
                             @else
                                 <span>🤍 {{ $quote->likedBy->count() }}</span>
                             @endauth
-
+<button type="button" @click="openCard(@js($quote->text), @js($quote->user->name))"
+        class="hover:text-tuwaiq-orange">🖼 Card</button>
                             @can('update', $quote)
                                 <button @click="editing = true" class="hover:text-tuwaiq-orange">✎ Edit</button>
                                 <form method="POST" action="{{ route('quotes.destroy', $quote) }}">
@@ -179,7 +180,40 @@
                 </div>
             </div>
         @endauth
+<div x-show="card.open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+    <div class="w-full max-w-md rounded-3xl bg-white p-5 shadow-2xl">
+        <div class="mb-3 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-tuwaiq-purple">Quote card</h2>
+            <button @click="card.open = false" class="text-xl text-gray-400 hover:text-gray-700">✕</button>
+        </div>
 
+        {{-- The card that becomes an image --}}
+        <div x-ref="cardPreview" class="flex aspect-square w-full flex-col justify-between rounded-2xl p-8"
+             :style="`background:${card.bg}; color:${card.fg}; font-family:${card.font}`">
+            <span class="text-5xl font-black" style="color:#a020f0; text-shadow:0 0 18px #a020f0">!</span>
+            <p class="text-2xl leading-relaxed" x-text="'“' + card.text + '”'"></p>
+            <div class="flex items-end justify-between">
+                <span class="text-sm opacity-80" x-text="'— ' + card.author"></span>
+                <span class="text-lg font-bold">إدراك<span style="color:#a020f0">!</span></span>
+            </div>
+        </div>
+
+        <div class="mt-4 flex items-center gap-2">
+            <template x-for="c in colors" :key="c.bg">
+                <button type="button" @click="card.bg = c.bg; card.fg = c.fg"
+                        class="h-8 w-8 rounded-full border-2" :style="`background:${c.bg}`"
+                        :class="card.bg === c.bg ? 'border-tuwaiq-orange' : 'border-gray-300'"></button>
+            </template>
+            <select x-model="card.font" class="ml-auto rounded-lg border px-2 py-1 text-sm text-tuwaiq-purple">
+                <option value="Georgia, serif">Serif</option>
+                <option value="Arial, sans-serif">Sans</option>
+                <option value="'Courier New', monospace">Mono</option>
+            </select>
+        </div>
+
+        <button type="button" @click="downloadCard()" class="btn-primary mt-4 w-full">Download PNG</button>
+    </div>
+</div>
     </main>
 </body>
 </html>
