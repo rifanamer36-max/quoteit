@@ -36,8 +36,11 @@
         </form>
     </div>
 
-    <div class="hidden items-center justify-center md:flex">
-        <img src="{{ asset('images/signup.jpeg') }}" alt="QuoteIt" class="w-full max-w-sm rounded-2xl object-contain">
+   <div class="hidden items-center justify-center p-8 md:flex">
+    <div class="w-full max-w-sm rounded-3xl border border-white/20 bg-gradient-to-br from-tuwaiq-purple/60 to-[#10081F]/80 p-8 text-center shadow-[0_0_60px_rgba(147,51,234,0.35)]">
+        <img src="{{ asset('images/edrak-logo.png') }}" alt="Edrak" class="mx-auto w-72 max-w-full">
+        <p class="mt-6 text-lg text-white/80" dir="rtl">سطورٌ تشرح ما تشعر به</p>
+        <p class="mt-2 text-sm text-tuwaiq-orange">Find the words that match how you feel.</p>
     </div>
 </div>
 @endsection

@@ -37,7 +37,19 @@
     </nav>
 
     <main class="mx-auto max-w-3xl p-8" x-data="{ open: {{ $errors->any() ? 'true' : 'false' }}, mood: '' }">
-
+@if ($daily)
+    <div class="mb-8 rounded-3xl border border-tuwaiq-orange/40 bg-gradient-to-br from-tuwaiq-purple to-[#1a0b3b] p-6 text-white shadow-xl"
+         x-data="{ copied: false }">
+        <p class="text-sm font-semibold text-tuwaiq-orange">✦ Insight of the Day · إدراك اليوم</p>
+        <p class="mt-3 text-2xl leading-relaxed">“{{ $daily->text }}”</p>
+        <p class="mt-3 text-sm opacity-80">— {{ $daily->user->name }}</p>
+        <button type="button" class="btn-secondary mt-4"
+                @click="navigator.clipboard.writeText(@js($daily->text)); copied = true; setTimeout(() => copied = false, 2000)">
+            <span x-show="!copied">Copy</span>
+            <span x-show="copied" x-cloak>Copied ✓</span>
+        </button>
+    </div>
+@endif
         <h2 class="mb-4 text-2xl font-bold text-white">Quotes</h2>
 
         {{-- Mood compass --}}

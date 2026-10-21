@@ -5,27 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Quote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Cache;
 
 class QuoteController extends Controller
 {
     public function index()
-    {
-        $quotes = Quote::with(['user', 'likedBy'])->latest()->get();
+{
+    $quotes = Quote::with(['user', 'likedBy'])->latest()->get();
 
-        return view('quotes.index', compact('quotes'));
-    }
+    // Insight of the Day: one random quote, fixed for the whole day
+    $dailyId = Cache::remember(
+        'daily_quote_' . now()->toDateString(),
+        now()->endOfDay(),
+        fn () => Quote::inRandomOrder()->value('id')
+    );
+    $daily = $dailyId ? $quotes->firstWhere('id', $dailyId) : null;
 
-    public function store(Request $request)
-    {
-       $validated = $request->validate([
-    'text' => ['required', 'string', 'min:3', 'max:155'],
-    'mood' => ['required', 'in:' . implode(',', array_keys(Quote::MOODS))],
-]);
-
-        $request->user()->quotes()->create($validated);
-
-        return redirect()->route('quotes.index');
-    }
+    return view('quotes.index', compact('quotes', 'daily'));
+}
 
     public function update(Request $request, Quote $quote)
     {
