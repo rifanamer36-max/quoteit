@@ -1,6 +1,5 @@
-# QuoteIt
-
-A simple website where anyone can read quotes, and registered users can share, edit, delete, and like quotes.
+# Edrak!
+سطورٌ تشرح ما تشعر به — a quotes website to read, share, and feel quotes.
 
 Built with Laravel, MySQL, Laravel Breeze, Blade, Tailwind CSS, and Alpine.js.
 
@@ -8,9 +7,13 @@ Built with Laravel, MySQL, Laravel Breeze, Blade, Tailwind CSS, and Alpine.js.
 
 - View all quotes without logging in
 - Sign up, log in, log out
-- Share a quote (3 to 155 characters)
+- Share a quote (3 to 155 characters) with a mood
 - Edit and delete your own quotes only
-- Like and unlike quotes, with a like counter (added feature)
+- Like and unlike quotes, with a like counter
+- Mood compass: filter quotes by Hope, Calm, Philosophy, or Motivation
+- Insight of the Day: one highlighted quote each day
+- Quote card: turn a quote into a downloadable PNG image
+- Calm session: full-screen quotes for a moment of focus
 
 ## Project Structure
 
@@ -18,9 +21,13 @@ Built with Laravel, MySQL, Laravel Breeze, Blade, Tailwind CSS, and Alpine.js.
 - **Backend:** `app/Http/Controllers/`, `app/Models/`, `app/Policies/`, `routes/web.php`
 - **Database:** `database/migrations/`
 
-## Added Feature (Likes)
+## Added Features
 
-Logged-in users can like and unlike any quote, and everyone, including guests, can see the like count. A user can like a quote only once, which is enforced by a unique constraint in the database (`quote_likes` table).
+Guest Account Registration: Added a option to quickly sign up for a new user account.
+Quote Mood Selection: Enabled attaching a specific mood (Hope, Calm, Philosophy, Motivation) when adding or editing quotes.
+Downloadable Quote Cards: Implemented exporting quotes as downloadable PNG image cards.
+Calm Session View: Designed a full-screen, focused quotes display mode for uninterrupted reading.
+Database-Enforced Like System: Logged-in users can like/unlike quotes with real-time counters, secured by a unique database constraint on the quote_likes table to prevent duplicate likes.
 
 ## How to run
 
