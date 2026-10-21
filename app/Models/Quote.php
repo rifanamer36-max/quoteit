@@ -8,14 +8,26 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Quote extends Model
 {
-    protected $fillable = ['user_id', 'text'];
+ public const MOODS = [
+    'hope'       => '💡 Hope',
+    'calm'       => '🌿 Calm',
+    'philosophy' => '📖 Philosophy',
+    'motivation' => '⚡ Motivation',
+];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-    public function likedBy(): BelongsToMany
-{
-    return $this->belongsToMany(User::class, 'quote_likes')->withTimestamps();
-}
+protected $fillable = ['user_id', 'text', 'mood'];
+ public function user(): BelongsTo
+ {
+ return $this->belongsTo(User::class);
+ }
+
+ public function likedBy(): BelongsToMany
+ {
+ return $this->belongsToMany(User::class, 'quote_likes')->withTimestamps();
+ }
+
+ public function favoredBy(): BelongsToMany
+ {
+ return $this->belongsToMany(User::class, 'quote_user_favorites')->withTimestamps();
+ }
 }

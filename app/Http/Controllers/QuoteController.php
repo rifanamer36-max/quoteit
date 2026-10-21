@@ -17,9 +17,10 @@ class QuoteController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'text' => ['required', 'string', 'min:3', 'max:155'],
-        ]);
+       $validated = $request->validate([
+    'text' => ['required', 'string', 'min:3', 'max:155'],
+    'mood' => ['required', 'in:' . implode(',', array_keys(Quote::MOODS))],
+]);
 
         $request->user()->quotes()->create($validated);
 

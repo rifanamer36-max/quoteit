@@ -1,9 +1,9 @@
-<!<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>QuoteIt</title>
+    <title>إدراك!</title>
     <style>[x-cloak]{display:none !important}</style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -11,7 +11,6 @@
       style="background-image: url('{{ asset('images/background.png') }}'); background-size: cover;">
 
     <nav class="relative sticky top-0 z-50 border-b border-white/30 bg-[#10081F] shadow-sm">
-        <p class="site-name">QuoteIt</p>
         <ul class="mx-auto flex max-w-7xl items-center gap-6 px-4 py-1">
             @auth
                 <li>
@@ -29,19 +28,36 @@
                 <li><a href="{{ route('login') }}" class="btn-primary">Log In</a></li>
                 <li><a href="{{ route('register') }}" class="btn-primary">Sign Up</a></li>
             @endauth
-            <li class="ml-auto"><img src="{{ asset('images/logo.png') }}" class="h-16 w-auto" alt="Logo"></li>
+            <li class="ml-auto flex items-center gap-4">
+                <img src="{{ asset('images/edrak-logo.png') }}" class="h-12 w-auto" alt="Edrak">
+                <span class="h-10 w-px bg-white/30"></span>
+                <img src="{{ asset('images/logo.png') }}" class="h-16 w-auto" alt="Tuwaiq">
+            </li>
         </ul>
     </nav>
 
-    <main class="mx-auto max-w-3xl p-8" x-data="{ open: {{ $errors->any() ? 'true' : 'false' }} }">
+    <main class="mx-auto max-w-3xl p-8" x-data="{ open: {{ $errors->any() ? 'true' : 'false' }}, mood: '' }">
 
         <h2 class="mb-4 text-2xl font-bold text-white">Quotes</h2>
+
+        {{-- Mood compass --}}
+        <div class="mb-6 flex flex-wrap gap-2">
+            <button type="button" @click="mood = ''"
+                    :class="mood === '' ? 'bg-tuwaiq-orange text-tuwaiq-purple' : 'bg-white/10 text-white'"
+                    class="rounded-full px-4 py-2 text-sm font-medium transition">All</button>
+
+            @foreach (\App\Models\Quote::MOODS as $key => $label)
+                <button type="button" @click="mood = '{{ $key }}'"
+                        :class="mood === '{{ $key }}' ? 'bg-tuwaiq-orange text-tuwaiq-purple' : 'bg-white/10 text-white'"
+                        class="rounded-full px-4 py-2 text-sm font-medium transition">{{ $label }}</button>
+            @endforeach
+        </div>
 
         @guest
             <a href="{{ route('login') }}" class="btn-primary mb-6">Log in to share a quote</a>
         @endguest
 
-        <div class="space-y-4">
+        <div class="flex flex-col gap-4">
             @forelse ($quotes as $quote)
                 @php
                     $mine = auth()->id() === $quote->user_id;
@@ -49,6 +65,7 @@
                 @endphp
 
                 <div class="rounded-2xl p-5 shadow {{ $mine ? 'bg-tuwaiq-purple text-white' : 'bg-white text-tuwaiq-purple' }}"
+                     x-show="mood === '' || mood === '{{ $quote->mood }}'"
                      x-data="{ editing: {{ $errors->update->has('text') && old('quote_id') == $quote->id ? 'true' : 'false' }} }">
 
                     <div x-show="!editing">
@@ -57,6 +74,12 @@
                             <span class="font-semibold">— {{ $mine ? 'You' : $quote->user->name }}</span>
                             <span class="text-xs opacity-70">· {{ $quote->created_at->format('d M Y') }}</span>
                         </p>
+
+                        @if ($quote->mood)
+                            <span class="mt-2 inline-block rounded-full bg-tuwaiq-orange/20 px-3 py-1 text-xs">
+                                {{ \App\Models\Quote::MOODS[$quote->mood] ?? '' }}
+                            </span>
+                        @endif
 
                         <div class="mt-3 flex items-center gap-4 text-sm">
                             @auth
@@ -126,6 +149,16 @@
                         <p class="text-xs text-gray-500">3–155 characters.</p>
 
                         @error('text')
+                            <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+
+                        <select name="mood" required class="input">
+                            <option value="" disabled {{ old('mood') ? '' : 'selected' }}>How does it feel?</option>
+                            @foreach (\App\Models\Quote::MOODS as $key => $label)
+                                <option value="{{ $key }}" {{ old('mood') === $key ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        @error('mood')
                             <p class="text-sm text-red-600">{{ $message }}</p>
                         @enderror
 
