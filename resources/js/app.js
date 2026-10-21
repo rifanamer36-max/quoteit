@@ -29,6 +29,24 @@ Alpine.data('quotesPage', (hasErrors = false) => ({
         link.download = 'edrak-quote.png';
         link.click();
     },
+    focus: { open: false, i: 0, items: [], timer: null },
+
+startFocus(items) {
+    if (!items.length) return;
+    this.focus.items = items;
+    this.focus.i = Math.floor(Math.random() * items.length);
+    this.focus.open = true;
+    this.focus.timer = setInterval(() => this.nextFocus(), 8000);
+},
+
+nextFocus() {
+    this.focus.i = (this.focus.i + 1) % this.focus.items.length;
+},
+
+stopFocus() {
+    clearInterval(this.focus.timer);
+    this.focus.open = false;
+},
 }));
 
 Alpine.start();
