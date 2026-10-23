@@ -91,7 +91,7 @@
 
                 <div class="rounded-2xl p-5 shadow {{ $mine ? 'bg-tuwaiq-purple text-white' : 'bg-white text-tuwaiq-purple' }}"
                      x-show="mood === '' || mood === '{{ $quote->mood }}'"
-                     x-data="{ editing: {{ $errors->update->has('text') && old('quote_id') == $quote->id ? 'true' : 'false' }} }">
+                     x-data="{ editing: {{ $errors->update->any('text') && old('quote_id') == $quote->id ? 'true' : 'false' }} }">
 
                     <div x-show="!editing">
                         <p class="text-lg">“{{ $quote->text }}”</p>
@@ -138,6 +138,18 @@
                                       class="input">{{ old('quote_id') == $quote->id ? old('text') : $quote->text }}</textarea>
 
                             @if (old('quote_id') == $quote->id)
+                            @php $currentMood = old('quote_id') == $quote->id ? old('mood', $quote->mood) : $quote->mood; @endphp
+<select name="mood" required class="input mt-2">
+    <option value="" disabled {{ $currentMood ? '' : 'selected' }}>Choose a mood</option>
+    @foreach (\App\Models\Quote::MOODS as $key => $label)
+        <option value="{{ $key }}" {{ $currentMood === $key ? 'selected' : '' }}>{{ $label }}</option>
+    @endforeach
+</select>
+@if (old('quote_id') == $quote->id)
+    @error('mood', 'update')
+        <p class="mt-1 text-sm text-red-300">{{ $message }}</p>
+    @enderror
+@endif
                                 @error('text', 'update')
                                     <p class="mt-1 text-sm text-red-300">{{ $message }}</p>
                                 @enderror
