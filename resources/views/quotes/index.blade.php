@@ -170,6 +170,18 @@
                                     <p class="mt-1 text-sm text-red-300">{{ $message }}</p>
                                 @enderror
                             @endif
+                            @php $currentMood = old('quote_id') == $quote->id ? old('mood', $quote->mood) : $quote->mood; @endphp
+<select name="mood" required class="input mt-2">
+    <option value="" disabled {{ $currentMood ? '' : 'selected' }}>Choose a mood</option>
+    @foreach (\App\Models\Quote::MOODS as $key => $label)
+        <option value="{{ $key }}" {{ $currentMood === $key ? 'selected' : '' }}>{{ $label }}</option>
+    @endforeach
+</select>
+@if (old('quote_id') == $quote->id)
+    @error('mood', 'update')
+        <p class="mt-1 text-sm text-red-300">{{ $message }}</p>
+    @enderror
+@endif
 
                             <div class="mt-3 flex gap-3">
                                 <button class="btn-secondary">Save</button>
