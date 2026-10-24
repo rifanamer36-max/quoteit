@@ -1,5 +1,6 @@
-# Edrak!
-سطورٌ تشرح ما تشعر به — a quotes website to read, share, and feel quotes.
+# Edrak! (QuoteIt)
+
+سطورٌ تشرح ما تشعر به — a website to read, share, and feel quotes.
 
 Built with Laravel, MySQL, Laravel Breeze, Blade, Tailwind CSS, and Alpine.js.
 
@@ -8,26 +9,21 @@ Built with Laravel, MySQL, Laravel Breeze, Blade, Tailwind CSS, and Alpine.js.
 - View all quotes without logging in
 - Sign up, log in, log out
 - Share a quote (3 to 155 characters) with a mood
-- Edit and delete your own quotes only
+- Edit (text and mood) and delete your own quotes only
 - Like and unlike quotes, with a like counter
 - Mood compass: filter quotes by Hope, Calm, Philosophy, or Motivation
 - Insight of the Day: one highlighted quote each day
-- Quote card: turn a quote into a downloadable PNG image
+- Quote card: turn a quote into a downloadable PNG (made in the browser)
 - Calm session: full-screen quotes for a moment of focus
+- My Insights: save quotes to your own page
 
 ## Project Structure
 
 - **Frontend:** `resources/views/`, `resources/css/`, `resources/js/`
-- **Backend:** `app/Http/Controllers/`, `app/Models/`, `app/Policies/`, `routes/web.php`
-- **Database:** `database/migrations/`
-
-## Added Features
-
-Guest Account Registration: Added a option to quickly sign up for a new user account.
-Quote Mood Selection: Enabled attaching a specific mood (Hope, Calm, Philosophy, Motivation) when adding or editing quotes.
-Downloadable Quote Cards: Implemented exporting quotes as downloadable PNG image cards.
-Calm Session View: Designed a full-screen, focused quotes display mode for uninterrupted reading.
-Database-Enforced Like System: Logged-in users can like/unlike quotes with real-time counters, secured by a unique database constraint on the quote_likes table to prevent duplicate likes.
+- **Backend:** `app/Http/Controllers/`, `app/Http/Requests/`, `app/Models/`, `app/Policies/`, `routes/web.php`
+- **Database:** `database/migrations/`, `database/seeders/`
+- **Tests:** `tests/Feature/QuoteTest.php`
+- **Documentation:** `docs/QuoteIt_SRS.docx`
 
 ## How to run
 
@@ -56,15 +52,18 @@ DB_PASSWORD=
 Then run:
 
 ```bash
-php artisan migrate
+php artisan migrate --seed
 npm run build
 php artisan serve
 ```
 
-Then open (`http://127.0.0.1:8000`) in your browser.
+Open (`http://127.0.0.1:8000`)
+(a local address: it works only while `php artisan serve` is running).
 
-> Note: this is a local address. It works only on the computer where `php artisan serve` is running, so the app is not hosted online.
+Demo accounts created by the seeder (password: `password`): `sara@example.com` and `omar@example.com`.
 
-## Documentation
+## Tests
 
-The full requirements are in [docs/QuoteIt_SRS.docx](docs/QuoteIt_SRS.docx).
+```bash
+php artisan test --filter=QuoteTest
+```
