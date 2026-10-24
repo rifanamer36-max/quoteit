@@ -9,19 +9,20 @@
 <body class="min-h-screen bg-center bg-fixed bg-no-repeat"
       style="background-image: url('{{ asset('images/background.png') }}'); background-size: cover;">
 
-    <nav class="relative sticky top-0 z-50 border-b border-white/30 bg-[#10081F] shadow-sm">
-        <ul class="mx-auto flex max-w-7xl items-center gap-6 px-4 py-1">
-            @if (request()->routeIs('login'))
-                <li><a href="{{ route('register') }}" class="btn-primary">Sign Up</a></li>
-            @elseif (request()->routeIs('register'))
-                <li><a href="{{ route('login') }}" class="btn-primary">Log In</a></li>
-            @endif
-         <li class="ml-auto flex items-center gap-4">
- <img src="{{ asset('images/edrak-logo.png') }}" class="h-14 w-auto" alt="إدراك">
- <span class="h-10 w-px bg-white/30"></span>
- <img src="{{ asset('images/logo.png') }}" class="h-16 w-auto" alt="طويق">
-</li>
-    </nav>
+   <nav class="relative sticky top-0 z-50 border-b border-white/30 bg-[#10081F] shadow-sm">
+    <ul class="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-3 py-1 sm:gap-6 sm:px-4">
+        @if (request()->routeIs('login'))
+            <li><a href="{{ route('register') }}" class="btn-primary !px-4 !text-base sm:!px-6 sm:!text-lg">Sign Up</a></li>
+        @elseif (request()->routeIs('register'))
+            <li><a href="{{ route('login') }}" class="btn-primary !px-4 !text-base sm:!px-6 sm:!text-lg">Log In</a></li>
+        @endif
+        <li class="ml-auto flex items-center gap-2 sm:gap-4">
+            <img src="{{ asset('images/edrak-logo.png') }}" class="h-8 w-auto sm:h-12" alt="Edrak">
+            <span class="hidden h-10 w-px bg-white/30 sm:block"></span>
+            <img src="{{ asset('images/logo.png') }}" class="h-10 w-auto sm:h-16" alt="Tuwaiq">
+        </li>
+    </ul>
+</nav>
 
     <main>@yield('content')</main>
 </body>

@@ -11,32 +11,32 @@
       style="background-image: url('{{ asset('images/background.png') }}'); background-size: cover;">
 
     <nav class="relative sticky top-0 z-50 border-b border-white/30 bg-[#10081F] shadow-sm">
-        <ul class="mx-auto flex max-w-7xl items-center gap-6 px-4 py-1">
-            @auth
-                <li>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button class="btn-primary">Log Out</button>
-                    </form>
-                </li>
-                <li>
-                    <img src="{{ asset('images/profile.jpeg') }}" alt="Profile"
-                         class="h-10 w-10 rounded-full object-cover ring-2 ring-tuwaiq-purple">
-                </li>
-                <li><p class="text-white">{{ auth()->user()->name }}</p></li>
-            @else
-                <li><a href="{{ route('login') }}" class="btn-primary">Log In</a></li>
-                <li><a href="{{ route('register') }}" class="btn-primary">Sign Up</a></li>
-            @endauth
-            <li class="ml-auto flex items-center gap-4">
-                <img src="{{ asset('images/edrak-logo.png') }}" class="h-12 w-auto" alt="Edrak">
-                <span class="h-10 w-px bg-white/30"></span>
-                <img src="{{ asset('images/logo.png') }}" class="h-16 w-auto" alt="Tuwaiq">
+    <ul class="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-3 py-1 sm:gap-6 sm:px-4">
+        @auth
+            <li>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button class="btn-primary !px-4 !text-base sm:!px-6 sm:!text-lg">Log Out</button>
+                </form>
             </li>
-        </ul>
-    </nav>
+            <li>
+                <img src="{{ asset('images/profile.jpeg') }}" alt="Profile"
+                     class="h-9 w-9 rounded-full object-cover ring-2 ring-tuwaiq-purple sm:h-10 sm:w-10">
+            </li>
+            <li><p class="hidden text-white sm:block">{{ auth()->user()->name }}</p></li>
+        @else
+            <li><a href="{{ route('login') }}" class="btn-primary !px-4 !text-base sm:!px-6 sm:!text-lg">Log In</a></li>
+            <li><a href="{{ route('register') }}" class="btn-primary !px-4 !text-base sm:!px-6 sm:!text-lg">Sign Up</a></li>
+        @endauth
+        <ul class="ml-auto flex items-center gap-2 sm:gap-4">
+            <img src="{{ asset('images/edrak-logo.png') }}" class="h-8 w-auto sm:h-12" alt="Edrak">
+            <span class="hidden h-10 w-px bg-white/30 sm:block"></span>
+            <img src="{{ asset('images/logo.png') }}" class="h-10 w-auto sm:h-16" alt="Tuwaiq">
+</ul>
+    </ul>
+</nav>
 
-    <main class="mx-auto max-w-3xl p-8" x-data="quotesPage({{ $errors->any() ? 'true' : 'false' }})">
+    <main class="mx-auto max-w-3xl p-4 pb-28 sm:p-8 sm:pb-28" x-data="quotesPage({{ $errors->any() ? 'true' : 'false' }})">
 @if ($daily)
     <div class="mb-8 rounded-3xl border border-tuwaiq-orange/40 bg-gradient-to-br from-tuwaiq-purple to-[#1a0b3b] p-6 text-white shadow-xl"
          x-data="{ copied: false }">
@@ -64,7 +64,11 @@
     </button>
 </div>
         <h2 class="mb-4 text-2xl font-bold text-white">Quotes</h2>
-
+<div class="relative mb-4">
+    <input type="search" x-model="search" placeholder="Search quotes or authors… ابحث في الاقتباسات"
+           class="input pl-10">
+    <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">🔍</span>
+</div>
         {{-- Mood compass --}}
         <div class="mb-6 flex flex-wrap gap-2">
             <button type="button" @click="mood = ''"
@@ -89,9 +93,11 @@
                     $liked = auth()->check() && $quote->likedBy->contains(auth()->id());
                 @endphp
 
-                <div class="rounded-2xl p-5 shadow {{ $mine ? 'bg-tuwaiq-purple text-white' : 'bg-white text-tuwaiq-purple' }}"
-                     x-show="mood === '' || mood === '{{ $quote->mood }}'"
-                     x-data="{ editing: {{ $errors->update->any('text') && old('quote_id') == $quote->id ? 'true' : 'false' }} }">
+               <div class="fade-up rounded-2xl p-5 shadow {{ $mine ? 'bg-tuwaiq-purple text-white' : 'bg-white text-tuwaiq-purple' }}"
+     style="animation-delay: {{ min($loop->index, 8) * 60 }}ms"
+    x-show="(mood === '' || mood === '{{ $quote->mood }}') && (search === '' || @js(mb_strtolower($quote->text . ' ' . $quote->user->name)).includes(search.toLowerCase().trim()))"
+     x-transition.opacity.duration.300ms
+     x-data="{ editing: {{ $errors->update->any() && old('quote_id') == $quote->id ? 'true' : 'false' }} }">
 
                     <div x-show="!editing">
                         <p class="text-lg">“{{ $quote->text }}”</p>
@@ -173,7 +179,7 @@
                 +
             </button>
 
-            <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div x-show="open" x-cloak x-transition.opacity.duration.250ms  class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
                 <div class="w-full max-w-lg rounded-3xl bg-white p-6 shadow-2xl">
                     <div class="mb-4 flex items-center justify-between">
                         <h2 class="text-2xl font-bold text-tuwaiq-purple">Share a quote</h2>
@@ -206,21 +212,28 @@
             </div>
         @endauth
 <div x-show="card.open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-    <div class="w-full max-w-md rounded-3xl bg-white p-5 shadow-2xl">
+    <div class="w-full max-w-md rounded-3xl bg-white p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div class="mb-3 flex items-center justify-between">
             <h2 class="text-xl font-bold text-tuwaiq-purple">Quote card</h2>
             <button @click="card.open = false" class="text-xl text-gray-400 hover:text-gray-700">✕</button>
         </div>
 
         {{-- The card that becomes an image --}}
-        <div x-ref="cardPreview" class="flex aspect-square w-full flex-col justify-between rounded-2xl p-8"
+        <div x-ref="cardPreview" class="flex fade-up aspect-square w-full flex-col justify-between rounded-2xl p-8"
              :style="`background:${card.bg}; color:${card.fg}; font-family:${card.font}`">
             <span class="text-5xl font-black" style="color:#a020f0; text-shadow:0 0 18px #a020f0">!</span>
             <p class="text-2xl leading-relaxed" x-text="'“' + card.text + '”'"></p>
-            <div class="flex items-end justify-between">
-                <span class="text-sm opacity-80" x-text="'— ' + card.author"></span>
-                <span class="text-lg font-bold">إدراك<span style="color:#a020f0">!</span></span>
-            </div>
+           <div>
+    <div class="flex items-end justify-between">
+        <span class="text-sm opacity-80" x-text="'— ' + card.author"></span>
+        <span class="text-lg font-bold">إدراك<span style="color:#8b6fd6">!</span></span>
+    </div>
+    <div x-show="card.stamp" class="mt-3 flex items-center justify-between border-t pt-3"
+         :style="`border-color:${card.fg}33`">
+        <span class="text-xs opacity-70" dir="rtl">سطورٌ تشرح ما تشعر به</span>
+        <img x-show="card.qr" :src="card.qr" alt="QR" class="h-12 w-12">
+    </div>
+</div>
         </div>
 
         <div class="mt-4 flex items-center gap-2">
@@ -229,13 +242,15 @@
                         class="h-8 w-8 rounded-full border-2" :style="`background:${c.bg}`"
                         :class="card.bg === c.bg ? 'border-tuwaiq-orange' : 'border-gray-300'"></button>
             </template>
-            <select x-model="card.font" class="ml-auto rounded-lg border px-2 py-1 text-sm text-tuwaiq-purple">
+            <select x-model="card.font" class="ml-auto rounded-lg border py-1 pl-2 pr-8 text-sm text-tuwaiq-purple">>
                 <option value="Georgia, serif">Serif</option>
                 <option value="Arial, sans-serif">Sans</option>
                 <option value="'Courier New', monospace">Mono</option>
             </select>
         </div>
-
+<label class="mt-3 flex items-center gap-2 text-sm text-tuwaiq-purple">
+    <input type="checkbox" x-model="card.stamp"> Add stamp (tagline + QR)
+</label>
         <button type="button" @click="downloadCard()" class="btn-primary mt-4 w-full">Download PNG</button>
     </div>
 </div>

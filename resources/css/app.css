@@ -32,3 +32,18 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+@keyframes fade-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+}
+.fade-up { animation: fade-up .5s ease both; }
+
+.btn-primary:active, .btn-secondary:active { transform: scale(.97); }
+
+html { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+    .fade-up { animation: none; }
+    html { scroll-behavior: auto; }
+}
+.btn-primary, .btn-secondary { white-space: nowrap; }
