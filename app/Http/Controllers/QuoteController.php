@@ -13,7 +13,7 @@ class QuoteController extends Controller
 {
     public function index()
     {
-        $quotes = Quote::with(['user', 'likedBy'])->latest()->get();
+        $quotes = Quote::with(['user', 'likedBy', 'savedBy'])->latest()->get();
 
         // Insight of the Day: one random quote, fixed for the whole day
         $dailyId = Cache::remember(
@@ -55,4 +55,24 @@ class QuoteController extends Controller
 
         return back();
     }
+    public function save(Request $request, Quote $quote)
+{
+    $request->user()->savedQuotes()->toggle($quote->id);
+
+    return back();
+}
+
+public function saved(Request $request)
+{
+    $quotes = $request->user()->savedQuotes()
+        ->with(['user', 'likedBy', 'savedBy'])
+        ->latest('saved_quotes.created_at')
+        ->get();
+
+    return view('quotes.index', [
+        'quotes' => $quotes,
+        'daily'  => null,
+        'title'  => 'My Insights · مُدْرَكَاتي',
+    ]);
+}
 }

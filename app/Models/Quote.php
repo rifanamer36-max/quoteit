@@ -30,4 +30,8 @@ protected $fillable = ['user_id', 'text', 'mood'];
  {
  return $this->belongsToMany(User::class, 'quote_user_favorites')->withTimestamps();
  }
+ public function savedBy(): BelongsToMany
+{
+    return $this->belongsToMany(User::class, 'saved_quotes')->withTimestamps();
+}
 }

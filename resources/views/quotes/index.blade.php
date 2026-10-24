@@ -24,6 +24,9 @@
                      class="h-9 w-9 rounded-full object-cover ring-2 ring-tuwaiq-purple sm:h-10 sm:w-10">
             </li>
             <li><p class="hidden text-white sm:block">{{ auth()->user()->name }}</p></li>
+            
+                <li><a href="{{ route('quotes.saved') }}" class="text-white hover:text-tuwaiq-orange">مُدْرَكَاتي</a></li>
+                  <li><a href="{{ route('quotes.index') }}" class="text-white hover:text-tuwaiq-orange">Home</a></li>
         @else
             <li><a href="{{ route('login') }}" class="btn-primary !px-4 !text-base sm:!px-6 sm:!text-lg">Log In</a></li>
             <li><a href="{{ route('register') }}" class="btn-primary !px-4 !text-base sm:!px-6 sm:!text-lg">Sign Up</a></li>
@@ -63,7 +66,7 @@
         Start a calm session ☕
     </button>
 </div>
-        <h2 class="mb-4 text-2xl font-bold text-white">Quotes</h2>
+        <h2 class="mb-4 text-2xl font-bold text-white">{{ $title ?? 'Quotes' }} </h2>
 <div class="relative mb-4">
     <input type="search" x-model="search" placeholder="Search quotes or authors… ابحث في الاقتباسات"
            class="input pl-10">
@@ -91,6 +94,7 @@
                 @php
                     $mine = auth()->id() === $quote->user_id;
                     $liked = auth()->check() && $quote->likedBy->contains(auth()->id());
+                       $saved = auth()->check() && $quote->savedBy->contains(auth()->id());
                 @endphp
 
                <div class="fade-up rounded-2xl p-5 shadow {{ $mine ? 'bg-tuwaiq-purple text-white' : 'bg-white text-tuwaiq-purple' }}"
@@ -121,6 +125,12 @@
                             @else
                                 <span>🤍 {{ $quote->likedBy->count() }}</span>
                             @endauth
+                               @auth
+       <form method="POST" action="{{ route('quotes.save', $quote) }}">
+           @csrf
+           <button title="Save to My Insights">{{ $saved ? '🔖 Saved' : '📑 Save' }}</button>
+       </form>
+   @endauth
 <button type="button" @click="openCard(@js($quote->text), @js($quote->user->name))"
         class="hover:text-tuwaiq-orange">🖼 Card</button>
                             @can('update', $quote)
@@ -166,11 +176,12 @@
                                 <button type="button" @click="editing = false" class="hover:underline">Cancel</button>
                             </div>
                         </form>
-                    @endcan
+                                      @endcan
                 </div>
             @empty
-                <p class="text-gray-300">No quotes yet. Be the first to share one!</p>
+                <p class="text-gray-300">{{ isset($title) ? "You haven't saved any insights yet." : 'No quotes yet. Be the first to share one!' }}</p>
             @endforelse
+        </div>
         </div>
 
         @auth

@@ -26,5 +26,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::middleware('auth')->group(function () {
+    Route::post('/quotes/{quote}/save', [QuoteController::class, 'save'])->name('quotes.save');
+    Route::get('/my-insights', [QuoteController::class, 'saved'])->name('quotes.saved');
+});
 
 require __DIR__.'/auth.php';

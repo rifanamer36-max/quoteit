@@ -38,4 +38,8 @@ class User extends Authenticatable
   {
   return $this->belongsToMany(Quote::class, 'quote_user_favorites')->withTimestamps();
   }
+  public function savedQuotes(): BelongsToMany
+{
+    return $this->belongsToMany(Quote::class, 'saved_quotes')->withTimestamps();
+}
 }

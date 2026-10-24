@@ -103,4 +103,15 @@ class QuoteTest extends TestCase
 
         $this->get('/')->assertOk()->assertSee('Insight of the Day');
     }
+    public function test_user_can_save_a_quote_to_my_insights(): void
+{
+    $user = User::factory()->create();
+    $quote = $this->makeQuote(User::factory()->create(), ['text' => 'Saved for later']);
+
+    $this->actingAs($user)->post("/quotes/{$quote->id}/save");
+    $this->actingAs($user)->get('/my-insights')->assertOk()->assertSee('Saved for later');
+
+    $this->actingAs($user)->post("/quotes/{$quote->id}/save");
+    $this->actingAs($user)->get('/my-insights')->assertDontSee('Saved for later');
+}
 }
