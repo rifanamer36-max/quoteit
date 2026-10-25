@@ -65,5 +65,5 @@ Demo accounts created by the seeder (password: `password`): `sara@example.com` a
 ## Tests
 
 ```bash
-php artisan test --filter=QuoteTest
+php artisan test --filter="QuoteTest|RegistrationRulesTest"
 ```
